@@ -12,13 +12,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
       - name: Build APK
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tail -50
       - name: Upload APK artifact
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: GBT-overlay-apk
